@@ -9,8 +9,8 @@ fsi<-merge(bankfsi,bondfsi,moneyfsi,equityfsi,fxfsi)
 ##x is merge of sub-market indexes
 CISS<-function(x){
   garch.spec<-ugarchspec(mean.model = list(armaOrder = c(1,1)), 
-                         variance.model = list(garchOrder = c(1,1), model = "sGARCH"), 
-                         distribution.model = "norm")
+  variance.model = list(garchOrder = c(1,1), model = "sGARCH"), 
+  distribution.model = "norm")
   dcc.spec<-dccspec(uspec = multispec(replicate(5, garch.spec)), dccOrder = c(1,1), distribution = "mvnorm")
   dcc.fit<-dccfit(dcc.spec, data =x , fit.control=list(scale=TRUE))
   cormat<-rcor(dcc.fit, type="R")
@@ -18,9 +18,12 @@ CISS<-function(x){
   weights<-c(0.2,0.2,0.2,0.2,0.2) # Equal weigths
   y<-xts(x)
   j=1
-  for (i in 1:length(y[,1])){
-    for (j in 1:length(weights))
+  i=1
+  for (j in 1:length(weights)){
+    for (i in 1:length(y[,1])){
       y[,j][i]=weights[j]*x[,j][i]
+      i=i+1
+    }
     j=j+1
   }
   S<-matrix(y,nrow=length(y[,1]),ncol=5)
@@ -31,4 +34,3 @@ CISS<-function(x){
   }
   return(ciss)
 }
-
