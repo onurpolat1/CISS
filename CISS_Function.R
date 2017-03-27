@@ -15,17 +15,9 @@ CISS<-function(x){
   dcc.fit<-dccfit(dcc.spec, data =x , fit.control=list(scale=TRUE))
   cormat<-rcor(dcc.fit, type="R")
   cormatrix<-cormat[1:5,1:5,]
-  weights<-c(0.2,0.2,0.2,0.2,0.2) # Equal weigths
+  weight<-0.2 # Equal weights
   y<-xts(x)
-  j=1
-  i=1
-  for (j in 1:length(weights)){
-    for (i in 1:length(y[,1])){
-      y[,j][i]=weights[j]*x[,j][i]
-      i=i+1
-    }
-    j=j+1
-  }
+  y<-weight*x
   S<-matrix(y,nrow=length(y[,1]),ncol=5)
   S_tr<-t(S)
   ciss<-xts(y[,1])
